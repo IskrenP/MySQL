@@ -1,0 +1,98 @@
+CREATE TABLE products(
+id INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(30) NOT NULL UNIQUE,
+type VARCHAR(30) NOT NULL,
+price DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE clients(
+id INT PRIMARY KEY AUTO_INCREMENT,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+birthdate DATE NOT NULL,
+card VARCHAR (50),
+review TEXT
+);
+
+CREATE TABLE tables(
+id INT PRIMARY KEY AUTO_INCREMENT,
+floor INT NOT NULL,
+reserved TINYINT(1),
+capacity INT NOT NULL
+
+);
+
+CREATE TABLE waiters(
+id INT PRIMARY KEY AUTO_INCREMENT,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL,
+phone VARCHAR(50),
+salary DECIMAL(10,2)
+);
+
+CREATE TABLE orders(
+id INT PRIMARY KEY AUTO_INCREMENT,
+table_id INT NOT NULL,
+waiter_id INT NOT NULL,
+order_time TIME NOT NULL,
+payed_status TINYINT(1),
+constraint fk_orders_tables
+foreign key (table_id)
+REFERENCES tables(id),
+constraint fk_orders_waiters
+FOREIGN KEY (waiter_id)
+references waiters(id)
+);
+
+CREATE TABLE orders_clients(
+order_id INT,
+client_id INT,
+constraint fk_ordersclients_orders
+foreign key (order_id)
+references orders(id),
+constraint fk_ordersclients_clients
+FOREIGN KEY (client_id)
+references clients(id)
+);
+
+CREATE TABLE orders_products(
+order_id INT,
+product_id INT,
+constraint fk_ordersproducts_orders
+foreign key (order_id)
+references orders(id),
+CONSTRAINT fk_ordersproducts_products
+FOREIGN KEY (product_id)
+REFERENCES products(id)
+);
+
+
+INSERT INTO products(name, type, price) SELECT
+                                            CONCAT(last_name, ' specialty'),
+                                            'Cocktail',
+                                       CEIL(salary * 0.01)
+                                        FROM waiters WHERE id > 6;
+                                        
+                                        
+UPDATE orders
+SET table_id = table_id - 1
+WHERE id BETWEEN 12 AND 23;
+
+DELETE w
+FROM
+waiters AS w
+LEFT JOIN orders AS o ON w.id =  o.waiter_id
+WHERE o.id IS NULL;
+
+
+SELECT * FROM clients
+ORDER BY birthdate DESC, id DESC;
+
+
+SELECT first_name, last_name, birthdate, review FROM clients
+WHERE year(birthdate) BETWEEN 1978 AND 1993 AND card IS NULL
+ORDER BY last_name DESC, id ASC
+LIMIT 5;
+                                        
+                                        
